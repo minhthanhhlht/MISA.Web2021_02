@@ -75,6 +75,7 @@ export default {
     cursor:pointer;
 }
 .select-head {
+    outline: none;
     border: none;
 }
 

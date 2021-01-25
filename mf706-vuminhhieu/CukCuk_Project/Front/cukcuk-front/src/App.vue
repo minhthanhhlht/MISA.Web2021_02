@@ -4,6 +4,7 @@
     <Sidebar msg="Welcome to Your Vue.js App"/>
     <Header msg="Welcome to Your Vue.js App"/>
     <Content msg="Welcome to Your Vue.js App"/>
+    
   </div>
 </template>
 
@@ -19,7 +20,7 @@ export default {
   components: {
     Sidebar,
     Header,
-    Content
+    Content,   
   }
 }
 </script>
