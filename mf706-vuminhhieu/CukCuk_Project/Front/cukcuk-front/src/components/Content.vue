@@ -8,7 +8,7 @@
         class="h-btn"
         id="btnAdd"
         data-toggle="modal"
-        v-on:click="openCreateModal()"
+        v-on:click="openEmployeeModeCreate()"
       >
         <i class="h-icon h-icon-add"></i> &nbsp; Thêm mới
       </button>
@@ -62,6 +62,7 @@
           <button
             id="btnRefresh"
             class="h-second-button h-btn-refresh"
+            @click="reloadData()"
           ></button>
         </div>
 
@@ -69,7 +70,7 @@
       </div>
       <Table msg="Welcome to Your Vue.js App"  ref="table_ref" />
       <Footer msg="Welcome to Your Vue.js App" class="content-footer" />
-      <CreateModal ref="createModal" @created="createCofirm"
+      <EmployeeModeCreate ref="EmployeeModeCreate_ref" @created="createCofirm"
         id="createNV"       
       />
      
@@ -80,7 +81,7 @@
 <script>
 import Table from "./table/Table.vue";
 import Footer from "./footer/Footer.vue";
-import CreateModal from "./modals/employee/CreateCustomer.vue";
+import EmployeeModeCreate from "./modals/employee/EmployeeModeCreate.vue";
 
 
 export default {
@@ -93,28 +94,32 @@ export default {
   components: {
     Table,
     Footer,
-    CreateModal,
+    EmployeeModeCreate,
     
   }, 
   methods: {
-    openCreateModal() {
+    openEmployeeModeCreate() {
       
-      console.log(this.$refs.createModal.show()); 
+      this.$refs.EmployeeModeCreate_ref.show(); 
 
       // do stuff with the data received by the modal
     },
     createCofirm : async function(){
        alert("Thêm mới thành công");
        var getData = this.$refs.table_ref.getData();      
-       this.$refs.createModal.hide();
+       this.$refs.EmployeeModeCreate_ref.hide();
       getData.await;
 
     },
-    openEditModal() {
-      this.$refs.table_ref.showEditModel();
+    openEditModal: async function() {
+      await this.$refs.table_ref.showEditModel();
     },
     openDeleteModal() {
       this.$refs.table_ref.showDeleteModal();
+    },
+    reloadData: async function(){
+      await this.$refs.table_ref.getData();  
+      
     }
     
   },

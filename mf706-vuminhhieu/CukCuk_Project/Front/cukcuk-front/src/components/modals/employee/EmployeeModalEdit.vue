@@ -253,9 +253,16 @@ export default {
   
  
   methods: {
-    hide() {
+    async hide() {
      
-      this.visible = false;
+      // this.visible = false;
+
+      //set settimeoout
+       setTimeout(
+        function () {
+          this.visible =false;
+        }.bind(this), 1000
+      );
     },
     show() {  
       this.visible = true;     

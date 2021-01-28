@@ -123,23 +123,28 @@
       <div class="processing-example text-info" role="status"></div>
       <span class="sr-only">Loading...</span>
     </div>
-    <EditModal
-      ref="editModal_ref"
+    <EmployeeModalEdit
+      ref="EmployeeModalEdit_ref"
       :employee="employee"
       @edited="editedCofirm"
     />
-    <DeleteModal
-      ref="deleteModal_ref"
+    <EmployeeModalDelete
+      ref="EmployeeModalDelete_ref"
       :listId="selected"
       @deleted="deletedCofirm"
+    />
+    <EmployeeModalConfirm
+       ref="EmployeeModalConfirm_ref"
+       :message="messageConfirm"
     />
   </div>
 </template>
 
 <script>
 import * as axios from "axios";
-import EditModal from "../modals/employee/EditCustomer.vue";
-import DeleteModal from "../modals/employee/DeleteCustomer.vue";
+import EmployeeModalEdit from "../modals/employee/EmployeeModalEdit.vue";
+import EmployeeModalDelete from "../modals/employee/EmployeeModalDelete.vue";
+import EmployeeModalConfirm from "../modals/employee/EmployeeModalConfirm.vue"
 // import VueToastr from "vue-toastr";
 
 export default {
@@ -148,8 +153,9 @@ export default {
     msg: String,
   },
   components: {
-    EditModal,
-    DeleteModal,
+    EmployeeModalEdit,
+    EmployeeModalDelete,
+    EmployeeModalConfirm,
   },
   data() {
     return {
@@ -185,6 +191,7 @@ export default {
         WorkStatusName: "",
       },
       selected: [],
+      messageConfirm: ''
     };
   },
 
@@ -198,6 +205,10 @@ export default {
       this.processing = false;
       // console.log(this.employees);
     },
+    async openEmployeeModalConfirm(){
+
+      await this.$refs.EmployeeModalConfirm_ref.show();
+      },
 
     // kiểm tra xem đã nhấn dòng chưa để sửa ui
     isSelected(id) {
@@ -216,7 +227,7 @@ export default {
       console.log(this.selected);
     },
     //mở modal edit
-    openEditModal(employee) {
+    openEmployeeModalEdit(employee) {
       this.employee = employee;
       // console.log(this.employee);
       if (
@@ -234,15 +245,18 @@ export default {
       if (this.employee.JoinDate != null && this.employee.JoinDate != "") {
         this.employee.JoinDate = this.employee.JoinDate.split("T")[0];
       }
-      this.$refs.editModal_ref.show();
-      // console.log(this.$refs.editModal.show());
+
+      this.$refs.EmployeeModalEdit_ref.show();
+
+      // console.log(this.$refs.EmployeeModalEdit.show());
 
       // do stuff with the data received by the modal
     },
 
     
     //kiểm xoát việc mở form edit bởi cha nó
-    showEditModel() {
+    showEditModel:function() {
+      
       if (this.selected.length < 1) {
         alert("vui lòng chọn nhân viên");
         return;
@@ -252,19 +266,20 @@ export default {
       }
       var empId = this.selected[0];
       var emp = this.employees.find((e) => e.EmployeeId == empId);
-      this.openEditModal(emp);
+      this.openEmployeeModalEdit(emp);
+      
     },
     resetSelected() {
       this.selected.length = 0; // tối ưu về hiệu suất
     },
     //kiểm xoát việc mở form delete bởi cha nó
-    showDeleteModal() {
+    showEmployeeModalDelete() {
       if (this.selected.length < 1) {
         alert("vui lòng chọn nhân viên");
         return;
       }     
      
-      this.$refs.deleteModal_ref.show();
+      this.$refs.EmployeeModalDelete_ref.show();
     },
     // thông báo cho cha nó sau khi đã sửa
     editedCofirm: async function (e) {
@@ -276,12 +291,15 @@ export default {
         //       timer: 10000
         //   });
         // VueToastr.success("Chỉnh sửa thành công");
-        alert("Chỉnh sửa thành công");
-        var get = this.getData();
-        this.$refs.editModal_ref.hide();
+        // alert("Chỉnh sửa thành công");
+        var get = this.getData();        
         get.await;
+        this.messageConfirm = "Cập nhật thành công";
+        await Promise.all([this.$refs.EmployeeModalConfirm_ref.show(),this.$refs.EmployeeModalEdit_ref.hide()]); 
+
       } else {
-        alert("that bai tại table");
+         this.messageConfirm = "Cập nhật thất bại";
+        this.$refs.EmployeeModalEdit_ref.hide();
       }
     },
     deletedCofirm: async function (e) {
@@ -298,7 +316,7 @@ export default {
       
         alert(strAnnounce);
         var get = this.getData();
-        this.$refs.deleteModal_ref.hide();
+        this.$refs.EmployeeModalDelete_ref.hide();
         get.await;
       
     },
