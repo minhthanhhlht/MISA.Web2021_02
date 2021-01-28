@@ -1,6 +1,5 @@
 <template>
   <div class="row">
-    
     <div class="grid grid-customer">
       <div
         class="el-table__body-wrapper is-scrolling-none el-table__body_custom"
@@ -75,44 +74,44 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="el-table__row first">
-              <td rowspan="1" colspan="1" style="width: 100px">
-                <div class="cell">NV-0441943</div>
+            <tr
+              class="el-table__row first"
+              v-for="employee in employees"
+              :key="employee.EmployeeId"
+              @click="selectRow(employee.EmployeeId)"
+              v-bind:class="isSelected(employee.EmployeeId) ? 'selected' : ''"
+            >
+              <td>
+                <div class="cell">{{ employee.EmployeeCode }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 143px">
-                <div class="cell">Nguyễn Huy Long</div>
+              <td>
+                <div class="cell">{{ employee.FullName }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 58px">
-                <div class="cell">Nam</div>
+              <td>
+                <div class="cell" v-bind:data-id="employee.Gender">
+                  {{ employee.GenderName }}
+                </div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 100px">
-                <div class="cell text-align-center">12/02/2000</div>
+              <td>
+                <div class="cell">{{ employee.DateOfBirth | getDate }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 119px">
-                <div class="cell">0945449964</div>
+              <td>
+                <div class="cell">{{ employee.PhoneNumber }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 192px">
-                <div class="cell">longlouis1222@gmail.com</div>
+              <td>
+                <div class="cell">{{ employee.Email }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 72px">
-                <div class="cell">Fresher</div>
+              <td>
+                <div class="cell">{{ employee.PositionName }}</div>
               </td>
-              <td
-                rowspan="1"
-                colspan="1"
-                class="text-align-right"
-                style="width: 55px"
-              >
-                <div class="cell">Công nghệ</div>
+              <td>
+                <div class="cell">{{ employee.DepartmentName }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 232px">
-                <div class="cell text-align-right">9000000</div>
+              <td>
+                <div class="cell">{{ employee.Salary }}</div>
               </td>
-              <td rowspan="1" colspan="1" style="width: 98px">
-                <div class="cell">Đang thử việc</div>
-              </td>
-              <td rowspan="1" colspan="1" style="width: 32px">
-                <div class="cell"></div>
+              <td>
+                <div class="cell">{{ employee.WorkStatusName }}</div>
               </td>
             </tr>
           </tbody>
@@ -120,31 +119,210 @@
       </div>
     </div>
     <!-- processing load -->
-    <div class="process-centure" v-show = visible>
+    <div class="process-centure" v-show="processing">
       <div class="processing-example text-info" role="status"></div>
       <span class="sr-only">Loading...</span>
     </div>
+    <EditModal
+      ref="editModal_ref"
+      :employee="employee"
+      @edited="editedCofirm"
+    />
+    <DeleteModal
+      ref="deleteModal_ref"
+      :listId="selected"
+      @deleted="deletedCofirm"
+    />
   </div>
 </template>
 
 <script>
+import * as axios from "axios";
+import EditModal from "../modals/employee/EditCustomer.vue";
+import DeleteModal from "../modals/employee/DeleteCustomer.vue";
+// import VueToastr from "vue-toastr";
+
 export default {
   name: "Table",
-  props:{
-    msg:String
-    
+  props: {
+    msg: String,
   },
-  data(){
+  components: {
+    EditModal,
+    DeleteModal,
+  },
+  data() {
     return {
-    visible: false
-    }
-  }  
+      processing: true,
+      employees: [],
+      employee: {
+        Address: "",
+        DateOfBirth: "",
+        DepartmentId: "",
+        DepartmentName: "",
+        EducationalBackground: null,
+        Email: "",
+        EmployeeCode: "",
+        EmployeeId: "",
+        FirstName: "",
+        FullName: "",
+        Gender: null,
+        GenderName: "",
+        IdentityDate: "",
+        IdentityNumber: "",
+        IdentityPlace: "",
+        JoinDate: "",
+        LastName: "",
+        MaritalStatus: null,
+        PersonalTaxCode: "",
+        PhoneNumber: "",
+        PositionId: "",
+        PositionName: "",
+        QualificationId: "",
+        QualificationName: "",
+        Salary: null,
+        WorkStatus: null,
+        WorkStatusName: "",
+      },
+      selected: [],
+    };
+  },
+
+  methods: {
+    // lấy data
+    async getData() {
+      this.processing = true;
+      this.resetSelected();
+      const response = await axios.get("http://api.manhnv.net/api/employees");
+      this.employees = response.data;
+      this.processing = false;
+      // console.log(this.employees);
+    },
+
+    // kiểm tra xem đã nhấn dòng chưa để sửa ui
+    isSelected(id) {
+      const index = this.selected.indexOf(id);
+      if (index > -1) return true;
+      return false;
+    },
+    // thêm hoặc xóa dòng đã chọn vào list selected
+    selectRow(id) {
+      const index = this.selected.indexOf(id);
+      if (index > -1) {
+        this.selected.splice(index, 1);
+      } else {
+        this.selected.push(id);
+      }
+      console.log(this.selected);
+    },
+    //mở modal edit
+    openEditModal(employee) {
+      this.employee = employee;
+      // console.log(this.employee);
+      if (
+        this.employee.DateOfBirth != null &&
+        this.employee.DateOfBirth != ""
+      ) {
+        this.employee.DateOfBirth = this.employee.DateOfBirth.split("T")[0];
+      }
+      if (
+        this.employee.IdentityDate != null &&
+        this.employee.IdentityDate != ""
+      ) {
+        this.employee.IdentityDate = this.employee.IdentityDate.split("T")[0];
+      }
+      if (this.employee.JoinDate != null && this.employee.JoinDate != "") {
+        this.employee.JoinDate = this.employee.JoinDate.split("T")[0];
+      }
+      this.$refs.editModal_ref.show();
+      // console.log(this.$refs.editModal.show());
+
+      // do stuff with the data received by the modal
+    },
+
+    
+    //kiểm xoát việc mở form edit bởi cha nó
+    showEditModel() {
+      if (this.selected.length < 1) {
+        alert("vui lòng chọn nhân viên");
+        return;
+      } else if (this.selected.length > 1) {
+        alert("vui lòng chỉ chọn 1 nhân viên để sửa");
+        return;
+      }
+      var empId = this.selected[0];
+      var emp = this.employees.find((e) => e.EmployeeId == empId);
+      this.openEditModal(emp);
+    },
+    resetSelected() {
+      this.selected.length = 0; // tối ưu về hiệu suất
+    },
+    //kiểm xoát việc mở form delete bởi cha nó
+    showDeleteModal() {
+      if (this.selected.length < 1) {
+        alert("vui lòng chọn nhân viên");
+        return;
+      }     
+     
+      this.$refs.deleteModal_ref.show();
+    },
+    // thông báo cho cha nó sau khi đã sửa
+    editedCofirm: async function (e) {
+      if (e == true) {
+        // VueToastr.mixin({
+        //       toast: true,
+        //       position: 'top-end',
+        //       showConfirmButton: false,
+        //       timer: 10000
+        //   });
+        // VueToastr.success("Chỉnh sửa thành công");
+        alert("Chỉnh sửa thành công");
+        var get = this.getData();
+        this.$refs.editModal_ref.hide();
+        get.await;
+      } else {
+        alert("that bai tại table");
+      }
+    },
+    deletedCofirm: async function (e) {
+      var strAnnounce = "";
+      e.array.forEach(function(item){
+          if(item.status == false){
+            strAnnounce = strAnnounce + " xóa thất bại: " + item.id +"\n";
+          }
+          else{
+            strAnnounce = strAnnounce + " Xóa thành công: " + item.id + "\n";
+          }
+      });        
+     
+      
+        alert(strAnnounce);
+        var get = this.getData();
+        this.$refs.deleteModal_ref.hide();
+        get.await;
+      
+    },
+  },
+  filters: {
+    getDate(value) {
+      if (value != "" && value != null) var valuefomat = value.split("T")[0];
+      return valuefomat;
+    },
+  },
+
+  async created() {
+    await this.getData();
+  },
 };
 </script>
 
 <style src="./table.scss" lang="scss" />
 <style scoped>
-.process-centure{
+.process-centure {
   text-align: center;
+}
+.selected {
+  background-color: rgba(150, 109, 48, 0.767) !important;
+  color: #ffffff;
 }
 </style>

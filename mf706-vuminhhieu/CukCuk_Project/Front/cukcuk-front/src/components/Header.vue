@@ -52,9 +52,6 @@ export default {
     padding:10px 5px 10px;
 }
 
-.img-circle {
-    border-radius: 50%;
-}
 
 .user-head {
     height: 40px;    

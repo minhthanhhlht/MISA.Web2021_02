@@ -8,7 +8,7 @@
         class="h-btn"
         id="btnAdd"
         data-toggle="modal"
-        v-on:click="openModal()"
+        v-on:click="openCreateModal()"
       >
         <i class="h-icon h-icon-add"></i> &nbsp; Thêm mới
       </button>
@@ -57,8 +57,8 @@
 
         <div class="col-md-3 ml-auto h-container-end">
           <button id="btnSearch" class="h-second-button h-btn-search"></button>
-          <button id="btnUpdate" class="h-second-button">Sửa</button>
-          <button id="btnDelete" class="h-second-button">Xóa</button>
+          <button id="btnUpdate" class="h-second-button" @click="openEditModal()">Sửa</button>
+          <button id="btnDelete" class="h-second-button" @click="openDeleteModal()">Xóa</button>
           <button
             id="btnRefresh"
             class="h-second-button h-btn-refresh"
@@ -67,11 +67,12 @@
 
         <!-- /.control content -->
       </div>
-      <Table msg="Welcome to Your Vue.js App"  />
+      <Table msg="Welcome to Your Vue.js App"  ref="table_ref" />
       <Footer msg="Welcome to Your Vue.js App" class="content-footer" />
-      <CreateModal ref="modal"
+      <CreateModal ref="createModal" @created="createCofirm"
         id="createNV"       
       />
+     
     </section>
   </div>
 </template>
@@ -81,25 +82,41 @@ import Table from "./table/Table.vue";
 import Footer from "./footer/Footer.vue";
 import CreateModal from "./modals/employee/CreateCustomer.vue";
 
+
 export default {
   name: "Content",
   data() {
     return {     
-      parameter1: true
+     
     };
   },
   components: {
     Table,
     Footer,
     CreateModal,
+    
   }, 
   methods: {
-    openModal() {
+    openCreateModal() {
       
-      console.log(this.$refs.modal.show()); 
+      console.log(this.$refs.createModal.show()); 
 
       // do stuff with the data received by the modal
     },
+    createCofirm : async function(){
+       alert("Thêm mới thành công");
+       var getData = this.$refs.table_ref.getData();      
+       this.$refs.createModal.hide();
+      getData.await;
+
+    },
+    openEditModal() {
+      this.$refs.table_ref.showEditModel();
+    },
+    openDeleteModal() {
+      this.$refs.table_ref.showDeleteModal();
+    }
+    
   },
 };
 </script>

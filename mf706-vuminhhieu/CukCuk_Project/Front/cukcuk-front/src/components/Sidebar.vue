@@ -122,7 +122,7 @@ export default {
             width: 100px;
             height: 40px;
             margin-left: 1rem;
-           background-image: url(../content/img/cukcuk-logo.png);
+           background-image: url('../content/img/cukcuk-logo.png');
             background-size: contain;
             background-position: center center;
             background-repeat: no-repeat;

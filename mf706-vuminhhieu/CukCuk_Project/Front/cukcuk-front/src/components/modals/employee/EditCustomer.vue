@@ -1,6 +1,6 @@
 <template>
-<transition name="component-fade" mode="out-in">
-<div class="h-dialog" v-show="visible">
+  <transition name="bounce">
+  <div class="h-dialog" v-show="visible">
     <div class="h-dialog-background"></div>
     <div class="h-dialog-content">
       <div class="h-dialog-header">
@@ -178,7 +178,7 @@
                   api="https://localhost:44376/api/EmployeeDepartments"
                   v-model="employee.DepartmentId"
                 >
-                <option value="17120d02-6ab5-3e43-18cb-66948daf6128">
+                  <option value="17120d02-6ab5-3e43-18cb-66948daf6128">
                     Phòng đào tạo
                   </option>
                   <option value="4e272fc4-7875-78d6-7d32-6a1673ffca7c">
@@ -215,10 +215,6 @@
             </div>
           </div>
         </div>
-
-        <!--<div class="dialog-btn">
-
-                    </div>-->
       </div>
       <div class="h-dialog-footer h-container-end-center">
         <button
@@ -234,20 +230,9 @@
       </div>
     </div>
 
-    <!--<div class="warning">
-                <div class="warning__content" title="Warning!!!">
-                    <div class="warning-text">
-                        <h2 style="color: red;">Cảnh báo !!!</h2>
-                        <p style="font-size: 16px;padding: 16px;">Bạn có chắc muốn Xóa thông tin nhân viên này không ?</p>
-                    </div>
-                    <div class="warning-btn">
-                        <button class="m-btn cancel-btn" id="btnCancel2">Hủy</button>
-                        <button class="m-btn save-btn" id="btnOk">Có</button>
-                    </div>
-                </div>
-            </div>-->
+    
   </div>
-</transition>
+  </transition>
   
 </template>
 
@@ -255,60 +240,41 @@
 import * as axios from "axios";
 
 export default {
-  // props: {
-  //     showModal: Boolean
-  // }, pr
+  props: ['employee'],
   data() {
     return {
       visible: false,
-      employee: {       
-       
-        
-        EmployeeCode: "",
-        FullName: "",
-        DateOfBirth: "",
-        Gender: null, 
-        IdentityNumber:"",
-        IdentityDate: null,
-        IdentityPlace: "",             
-        Email: "",
-        PhoneNumber: "",
-            
-        PositionId: "",     
-        DepartmentId: "",  
-        PersonalTaxCode:"",
-        Salary: null,        
-        JoinDate: "",
-        WorkStatus: null
-        
-      },
     };
   },
+  // created() {
+  //   console.log("run create");
+  //   console.log(this.employee);
+  // },
+  
  
   methods: {
     hide() {
      
       this.visible = false;
     },
-    show() {       
+    show() {  
       this.visible = true;     
     },
 
     async Confirm(){      
-      var confirm = false;
       console.log(this.employee);
-      await axios.post('http://api.manhnv.net/api/employees', this.employee)
+      var edited;
+      await axios.put('http://api.manhnv.net/api/employees', this.employee)
             .then(function (res) {
-              console.log("success: "+res);
-             confirm = true;
+              console.log("success in edit: "+res);
+              edited = true;
+              
             })
             .catch(function (err) {
-               console.log("false: " +err);    
-               confirm = false;          
+               console.log("false in edit: " +err);
+              edited = false;                         
             });
-
-            this.$emit("created", confirm);        
-
+            this.$emit("edited", edited);              
     }
   },
 };
@@ -347,15 +313,32 @@ export default {
   background-color: #019160;
 }
 
-.component-fade-enter-active {
-  transition: all .3s ease-in-out;
+.bounce-enter-active {
+  animation: bounce-in .5s;
 }
-.component-fade-leave-active {
-  transition: all .3s ease-in-out;
+
+.bounce-leave-active {
+  animation: bounce-out .3s;
 }
-.component-fade-enter, .component-fade-leave-to
-/* Trước 2.1.8 thì dùng .slide-fade-leave-active */ {
-  transform: translateY(-15px);
-  opacity: 0;
+@keyframes bounce-in {
+  0% {
+    transform: translatey(-15px)  ;
+    opacity: 0;
+  }
+  20% {
+    transform:scale(1.02)  ;
+    opacity: 1;
+  }
+  100% {
+    transform:scale(1) translatey(0px) ;
+    opacity: 1;
+  }
+}
+@keyframes bounce-out {
+  
+  100% {
+    transform: translatey(-15px) ;
+    opacity: 0;
+  }
 }
 </style>
