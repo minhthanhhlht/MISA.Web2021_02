@@ -12,6 +12,7 @@
           <div class="btn-text">Thêm nhân viên</div>
         </button>
         <Details :employee="selectedEmployee" @closePopup="closePopup" :isHide="isHideParent" />
+        <!-- <EmployeeAdd  @closePopup="closePopup" :isHide="isHideParent" /> -->
       </div>
     </div>
     <div class="filter-bar">
@@ -235,21 +236,39 @@
 <script>
 import * as axios from "axios";
 import Details from "./EmployeeProfileDetail";
+// import EmployeeAdd from "./EmployeeAdd";
 export default {
   name: "Employees",
   components: {
     Details,
+    // EmployeeAdd
   },
   methods: {
     btnAddOnClick() {
+       this.selectedEmployee = {};
       this.isHideParent = false;
+    },
+    formatDate(date){
+      var d = new Date(date);
+      var day = d.getDay();
+      var month = d.getMonth()+1;
+      if(month<10){
+        month = "0"+month;
+      }
+      if(day<10){
+        day = "0"+day;
+      }
+      var year = d.getFullYear();
+      return month+"/"+day+"/"+year;
     },
     rowOnClick(employee){
       this.isHideParent = false;
-      this.test = employee.FullName;
       this.selectedEmployee = employee;
+      this.selectedEmployee.DateOfBirth = new Date(this.selectedEmployee.DateOfBirth).toISOString().substr(0, 10);
+      this.selectedEmployee.JoinDate = new Date(this.selectedEmployee.JoinDate).toISOString().substr(0, 10);
+      this.selectedEmployee.IdentityDate = new Date(this.selectedEmployee.IdentityDate).toISOString().substr(0, 10);
       console.log(this.test);
-      console.log(employee.FullName);
+      console.log(this.selectedEmployee.DateOfBirth);
       // this.selectedEmployee.FullName = employee.FullName;
       // this.selectedEmployee.EmployeeCode = employee.EmployeeCode;
       //this.$emit('setTextEmployee',employee)

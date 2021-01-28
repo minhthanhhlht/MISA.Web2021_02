@@ -366,10 +366,20 @@ export default {
     //   this.employee = this.test;
     //   console.log(this.employee.FullName);
     // },
+    
     async saveEmployee() {
       const response = await axios.post("http://api.manhnv.net/api/employees", this.employee);
 
       console.log(response);
+    }
+  },
+  filters:{
+    formatDate(date){
+      var d = new Date(date);
+      var day = d.getDay();
+      var month = d.getMonth();
+      var year = d.getFullYear();
+      return month+"/"+day+"/"+year;
     }
   },
   data() {
