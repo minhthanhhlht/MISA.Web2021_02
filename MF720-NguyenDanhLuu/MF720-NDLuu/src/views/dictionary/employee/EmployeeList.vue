@@ -11,7 +11,7 @@
           <div class="m-btn-icon icon-add"></div>
           <div class="btn-text">Thêm nhân viên</div>
         </button>
-        <Details :test="selectedEmployee" @closePopup="closePopup" :isHide="isHideParent" />
+        <Details :employee="selectedEmployee" @closePopup="closePopup" :isHide="isHideParent" />
       </div>
     </div>
     <div class="filter-bar">
