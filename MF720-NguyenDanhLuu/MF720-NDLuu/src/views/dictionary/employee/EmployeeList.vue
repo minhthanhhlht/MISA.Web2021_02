@@ -63,6 +63,7 @@
         </select>
       </div>
       <div class="filter-right">
+        <button class="btn-delete">Xoá</button>
         <button id="btnRefresh" class="m-second-button m-btn-refresh"></button>
       </div>
     </div>
@@ -87,6 +88,7 @@
       >
         <thead class="has-gutter">
           <tr class="el-table__row">
+            <th style="text-align:center;">#Xoá</th>
             <th
               colspan="1"
               rowspan="1"
@@ -174,12 +176,16 @@
           </tr>
         </thead>
         <tbody>
+          
           <tr
             class="el-table__row"
             v-for="employee in employees"
             :key="employee.EmployeeId"
             @dblclick="rowOnClick(employee)"
           >
+            <td>
+                <input class="cell" type="checkbox" style="width:15px;">
+            </td>
             <td>
               <div class="cell">{{ employee.EmployeeCode }}</div>
             </td>
@@ -265,8 +271,8 @@ export default {
       this.isHideParent = false;
       this.selectedEmployee = employee;
       this.selectedEmployee.DateOfBirth = new Date(this.selectedEmployee.DateOfBirth).toISOString().substr(0, 10);
-      this.selectedEmployee.JoinDate = new Date(this.selectedEmployee.JoinDate).toISOString().substr(0, 10);
       this.selectedEmployee.IdentityDate = new Date(this.selectedEmployee.IdentityDate).toISOString().substr(0, 10);
+      this.selectedEmployee.JoinDate = new Date(this.selectedEmployee.JoinDate).toISOString().substr(0, 10);
       console.log(this.test);
       console.log(this.selectedEmployee.DateOfBirth);
       // this.selectedEmployee.FullName = employee.FullName;
@@ -430,6 +436,8 @@ export default {
 
     const response = await axios.get("http://api.manhnv.net/api/employees");
 
+
+
     console.log(response.data[0]);
 
     this.employees = response.data;
@@ -483,6 +491,20 @@ export default {
   right: 40px;
   line-height: 40px;
   font-style: italic;
+}
+.btn-delete{
+  border: solid 1.5px #bbbbbb;
+  background-color: #ffffff;
+  border-radius: 5px;
+  width: 50px;
+  height: 40px;
+  position: absolute;
+  left: -60px;
+  outline: none;
+}
+.btn-delete:hover{
+  background-color: #e9ebee;
+  cursor: pointer;
 }
 
 #txtSearchEmployee {

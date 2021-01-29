@@ -146,7 +146,7 @@
                       class="input-required"
                       type="text"
                       required
-                      v-model="this.employee.FullName"
+                      v-model="employee.FullName"
                     />
                   </div>
                 </div>
@@ -203,7 +203,7 @@
                   <div class="m-control">
                     <input
                       id="txtIdentityPlace"
-                      fieldName="PhoneNumber"
+                      fieldName="IdentityPlace"
                       class="input-required"
                       type="text"
                       v-model="employee.IdentityPlace"
@@ -235,7 +235,7 @@
                   <div class="m-control">
                     <input
                       id="txtPhoneNumber"
-                      fieldName="FullName"
+                      fieldName="PhoneNumber"
                       class="input-required"
                       type="text"
                       required
@@ -312,6 +312,7 @@
                     class="m-combobox-input"
                     type="date"
                     autocomplete="off"
+                    v-model="employee.JoinDate"
                   />
                 </div>
                 <div class="m-flex-1 mg-left-10px">
@@ -368,9 +369,15 @@ export default {
     // },
     
     async saveEmployee() {
-      const response = await axios.post("http://api.manhnv.net/api/employees", this.employee);
-
+      var response = null;
+      if(this.employee.EmployeeId === undefined){
+        response = await axios.post("http://api.manhnv.net/api/employees", this.employee);
+      }
+      else{
+          response = await axios.put("http://api.manhnv.net/api/employees", this.employee);
+      }
       console.log(response);
+      this.$emit('closePopup',true)
     }
   },
   filters:{
@@ -386,14 +393,14 @@ export default {
     return {
       dialog: false,
       display: "none",
-      // employee: {
+      // employeee: {
       //   DateOfBirth: "1992-06-17T00:00:00",
       //   Address: "319 Prospect Hill Blvd, Keith Bldg, Boise, Idaho, 76994",
       //   DepartmentId: "142cb08f-7c31-21fa-8e90-67245e8b283e",
       //   DepartmentName: "Phòng Marketting",
       //   EducationalBackground: 5,
       //   Email: "kute@example.com",
-      //   EmployeeCode: "ok",
+      //   EmployeeCode: "NDL-9999",
       //   FirstName: "Trương Phương",
       //   FullName: this.test.FullName,
       //   Gender: null,
