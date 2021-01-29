@@ -1,5 +1,5 @@
 <template>
-<BaseModalConfirm ref="BaseModalConfirm_ref">
+<BaseModalConfirm ref="BaseModalConfirm_ref" :success="success">
   <p>{{message}}</p>
 </BaseModalConfirm>
 </template>
@@ -9,7 +9,8 @@
 export default {
   props: {
     
-    message : String
+    message : String,
+    success : Boolean
     },
   data() {
     return {
@@ -18,6 +19,9 @@ export default {
   },
  components: {
    BaseModalConfirm
+ },
+ created(){
+    console.log(this.successConfirm);
  },
   methods: {
     hide() {

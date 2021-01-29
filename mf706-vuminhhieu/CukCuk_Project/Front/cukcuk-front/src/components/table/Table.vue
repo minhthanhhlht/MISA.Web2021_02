@@ -136,6 +136,7 @@
     <EmployeeModalConfirm
        ref="EmployeeModalConfirm_ref"
        :message="messageConfirm"
+       :success="successConfirm"
     />
   </div>
 </template>
@@ -191,10 +192,15 @@ export default {
         WorkStatusName: "",
       },
       selected: [],
-      messageConfirm: ''
+      messageConfirm: '',
+      successConfirm: true
     };
   },
-
+watch:{
+  employees: function() {
+    console.log(this.employee);
+  }
+},
   methods: {
     // lấy data
     async getData() {
@@ -249,8 +255,6 @@ export default {
       this.$refs.EmployeeModalEdit_ref.show();
 
       // console.log(this.$refs.EmployeeModalEdit.show());
-
-      // do stuff with the data received by the modal
     },
 
     
@@ -283,24 +287,16 @@ export default {
     },
     // thông báo cho cha nó sau khi đã sửa
     editedCofirm: async function (e) {
-      if (e == true) {
-        // VueToastr.mixin({
-        //       toast: true,
-        //       position: 'top-end',
-        //       showConfirmButton: false,
-        //       timer: 10000
-        //   });
-        // VueToastr.success("Chỉnh sửa thành công");
-        // alert("Chỉnh sửa thành công");
-        var get = this.getData();        
-        get.await;
+      if (e === true) {
         this.messageConfirm = "Cập nhật thành công";
-        await Promise.all([this.$refs.EmployeeModalConfirm_ref.show(),this.$refs.EmployeeModalEdit_ref.hide()]); 
-
-      } else {
+        this.successConfirm = true;        
+      } 
+      else {
          this.messageConfirm = "Cập nhật thất bại";
-        this.$refs.EmployeeModalEdit_ref.hide();
+         this.successConfirm = false;        
       }
+      await Promise.all([this.$refs.EmployeeModalConfirm_ref.show(),this.getData()]); 
+      await this.$refs.EmployeeModalEdit_ref.hide()
     },
     deletedCofirm: async function (e) {
       var strAnnounce = "";

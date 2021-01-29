@@ -1,8 +1,9 @@
 <template>
   <transition name="component-fade" mode="out-in">
-    <div class="h-confirm h-container-around-center" v-show="visible">
+    <div class="h-confirm h-container-around-center" v-bind:class="success ? 'h-success' : 'h-fail'"  v-show="visible">
       <div class="h-icon-confirm">
-        <i class="fas fa-check"></i>
+        <i class="fas fa-check fa-2x" v-if="success == true"></i>
+        <i class="fas fa-exclamation-circle" v-else></i>
       </div>
 
       <div class="h-confirm-content">
@@ -14,6 +15,9 @@
 
 <script>
 export default {
+  props: {
+    success: Boolean
+  },
   data() {
     return {
       visible: false,
@@ -25,7 +29,7 @@ export default {
       this.visible = false;
     },
     show: async function () {
-      this.visible = true;
+      this.visible = true;     
       setTimeout(
         function () {
           this.visible =false;
@@ -38,6 +42,14 @@ export default {
 
 <style src="./modal.scss" lang="scss" />
 <style scoped>
+.h-success {
+  background-color: seagreen;
+}
+
+.h-fail {
+  background-color: red;
+}
+
 .h-confirm {
   position: fixed;
   right: 10px;
@@ -45,12 +57,14 @@ export default {
   width: 200px;
   height: fit-content;
   min-height: 50px;
-  background-color: seagreen;
+  
   color: white;
   z-index: 10000;
   border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(102 175 233 / 60%);
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 16%), 0 0 20px rgb(102 175 233 / 85%);
 }
+
+
 .h-icon-confirm {
   padding-left: 15px;
   padding-right: 10px;
@@ -61,14 +75,14 @@ export default {
 }
 
 .component-fade-enter-active {
-  animation: bounce-in 0.3s ;
+  animation: bounce-in 0.5s ;
 }
 .component-fade-leave-active {
   animation: bounce-out 2s ;
 }
 @keyframes bounce-in {
   0% {
-    transform: translatex(-55px);
+    transform: translatey(-25px);
     opacity: 0;
   }
 

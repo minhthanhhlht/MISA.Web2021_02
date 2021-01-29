@@ -240,7 +240,9 @@
 import * as axios from "axios";
 
 export default {
-  props: ['employee'],
+  props: {
+    employee: Object
+  },
   data() {
     return {
       visible: false,
@@ -255,14 +257,9 @@ export default {
   methods: {
     async hide() {
      
-      // this.visible = false;
+      this.visible = false;
 
-      //set settimeoout
-       setTimeout(
-        function () {
-          this.visible =false;
-        }.bind(this), 1000
-      );
+      
     },
     show() {  
       this.visible = true;     
