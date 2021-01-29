@@ -24,7 +24,7 @@
             <div class="option__filter">
                 <div class="drop--down filter__department">
                     <select v-model="departmentId" @change="currentPage = 1; loadData()">
-                        <option value="-">Tất cả phòng ban</option>
+                        <option value=" ">Tất cả phòng ban</option>
                         <option v-for="(department, index) in departments" :value="department.DepartmentId" :key="index">{{ department.DepartmentName }}</option>
                     </select>
                 </div>
@@ -32,7 +32,7 @@
             <div class="option__filter">
                 <div class="drop--down filter__position">
                     <select v-model="positionId" @change="currentPage = 1; loadData()">
-                        <option value="-">Tất cả vị trí</option>
+                        <option value=" ">Tất cả vị trí</option>
                         <option v-for="(position, index) in positions" :value="position.PositionId" :key="index">{{ position.PositionName }}</option>
                     </select>
                 </div>
@@ -91,7 +91,8 @@
         </div>
         
         <DialogAdd v-if="dialogAdd" :setDisplay="setDialogAdd" :loadData="loadData" :departments="departments" :positions="positions" :dialogMode="dialogMode" :employeeId="employeeId"/>
-        <DialogDelete v-if="dialogDelete" :setDisplay="setDialogDelete" :loadData="loadData" :employeeId="employeeId"
+        <DialogDelete v-if="dialogDelete" :setDisplay="setDialogDelete" :loadData="loadData" :id="employeeId"
+            :name="'employee'" 
             :message="'Bạn có muốn xóa nhân viên này không?'"/>
     </div>
 </template>
@@ -157,8 +158,8 @@ export default {
             dialogDelete: false,
             dialogMode: null,
             employeeId: null,
-            positionId: '-',
-            departmentId: '-',
+            positionId: ' ',
+            departmentId: ' ',
             filterText: ''
         }
     },
@@ -170,14 +171,18 @@ export default {
         this.$store.commit("setCurrentTab", "employee");
         axios.get('http://localhost:49779/api/Departments')
             .then(res => {
-                this.departments = res.data;
+                if (res.data.Data != null && res.data.Code === 200) {
+                    this.departments = res.data.Data;
+                }
             })
             .catch(res => {
                 console.log(res);
             })
         axios.get('http://localhost:49779/api/Positions')
             .then(res => {
-                this.positions = res.data;
+                if (res.data.Data != null  && res.data.Code === 200) {
+                    this.positions = res.data.Data;
+                }
             })
             .catch(res => {
                 console.log(res);
@@ -186,17 +191,21 @@ export default {
     },
     methods: {
         loadData() {
-            axios.get('http://localhost:49779/api/Employees/count/'+ this.departmentId + '&' + this.positionId + '&' + (this.filterText===''?'-':this.filterText))
+            axios.get('http://localhost:49779/api/Employees/count/'+ this.departmentId + '&' + this.positionId + '&' + (this.filterText===''? '%20':this.filterText))
                 .then(res => {
-                    this.totalEmployees = res.data;
+                    if (res.data.Data != null && res.data.Code === 200) {
+                        this.totalEmployees = res.data.Data;
+                    }
                     this.totalPages = Math.ceil(this.totalEmployees/this.employeesPerPage);
                 })
                 .catch(res => {
                     console.log(res);
                 })
-            axios.get('http://localhost:49779/api/employees/' + this.currentPage + '&' + this.employeesPerPage + '&' + this.departmentId + '&' + this.positionId + '&' + (this.filterText===''?'-':this.filterText))
+            axios.get('http://localhost:49779/api/employees/' + this.currentPage + '&' + this.employeesPerPage + '&' + this.departmentId + '&' + this.positionId + '&' + (this.filterText===''?'%20':this.filterText))
                 .then(res => {
-                    this.employees = res.data;
+                    if (res.data.Data != null && res.data.Code === 200) {
+                        this.employees = res.data.Data;
+                    }
                     this.employees = this.employees.map(employee => {
                         employee.DateOfBirth = this.formatDate(employee.DateOfBirth);
                         employee.Salary = this.formatMoney(employee.Salary);

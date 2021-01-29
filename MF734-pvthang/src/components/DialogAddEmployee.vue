@@ -178,6 +178,7 @@ export default {
                 PhoneNumber: '',
                 Email: '',
                 JobStatus: '2',
+                Salary: 0,
                 Gender: '2',
                 DepartmentId: this.departments.length>0 ? this.departments[0].DepartmentId:'',
                 PositionId: this.positions.length>0 ? this.positions[0].PositionId:''
@@ -218,7 +219,9 @@ export default {
         if (this.dialogMode === 'EDIT') {
             axios.get('http://localhost:49779/api/Employees/' + this.employeeId)
                 .then(res => {
-                    this.employee = res.data;
+                    if (res.data.Data != null && res.data.Code === 200) {
+                        this.employee = res.data.Data;
+                    }
                     this.employee.DateOfBirth = this.formatDate(this.employee.DateOfBirth);
                     this.employee.IdentityDate = this.formatDate(this.employee.IdentityDate);
                     this.employee.JoinDate = this.formatDate(this.employee.JoinDate);
@@ -229,7 +232,10 @@ export default {
         } else if (this.dialogMode === 'ADD') {
             axios.get('http://localhost:49779/api/Employees/GetEmployeeCodeMax')
                 .then(res => {
-                    this.employee.EmployeeCode = 'NV' + (new Number(res.data.slice(2, res.data.length)) + 1);
+                    console.log(res)
+                    if (res.data.Data !== null && res.data.Code === 200) {
+                        this.employee.EmployeeCode = 'NV' + (new Number(res.data.Data.EmployeeCode.slice(2, res.data.Data.EmployeeCode.length)) + 1);
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -289,16 +295,16 @@ export default {
             if (this.dialogMode === 'ADD') {
                 axios.post('http://localhost:49779/api/Employees', this.employee)
                     .then(res => {
-                        if (res.data === 1) {
-                            console.log("OK!");
+                        console.log(res.data);
+                        if (res.data.Data != null && res.data.Code === 200) {
                             this.setDisplay(false);
-                        } else if (res.data === -1) {
+                            this.loadData();
+                        } else if (res.data.Code == 400) {
                             this.infoRequired.EmployeeCode.status = false;
                             this.infoRequired.EmployeeCode.message = "Mã nhân viên đã tồn tại!"
                         } else {
-                            console.log("NO!");
+                            console.log(res.data);
                         }
-                        this.loadData();
                     })
                     .catch(res => {
                         console.log(res);
@@ -306,23 +312,22 @@ export default {
             } else if (this.dialogMode === 'EDIT') {
                 axios.put('http://localhost:49779/api/Employees', this.employee)
                     .then(res => {
-                        if (res.data === 1) {
-                            console.log("OK!");
+                        if (res.data.Data != null && res.data.Code === 200) {
+                            this.loadData();
                             this.setDisplay(false);
-                        } else if (res.data === -1) {
+                        } else if (res.data.Code == 400) {
                             this.infoRequired.EmployeeCode.status = false;
                             this.infoRequired.EmployeeCode.message = "Mã nhân viên đã tồn tại!"
                         } else {
-                            console.log("NO!")
+                            console.log(res);
                         }
-                        this.loadData();
                     })
-                    .catch(res => {
+                    .catch((res) => {
                         console.log(res);
                     })
             }
         }
-    },
+    }
 }
 </script>
 <style scoped>

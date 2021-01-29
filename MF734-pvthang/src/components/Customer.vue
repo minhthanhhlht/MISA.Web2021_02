@@ -3,7 +3,7 @@
         <div class="content__title">
             <div class="title__text heading">Danh sách khách hàng</div>
             <div class="title__button">
-                <button class="button--icon add--customer" @click="btnAddOnClick()">
+                <button class="button--icon add--customer" @click="btnAddOnClick">
                     <div class="icon icon--add--customer"></div>
                     <div class="text">Thêm khách hàng</div>
                 </button>
@@ -19,6 +19,16 @@
                     </div>
                     <input type="text" v-model="filterText" maxlength="100" placeholder="Tìm kiếm theo mã, tên, số điện thoại"
                         @keyup.enter="loadData()">
+                </div>
+            </div>
+            <div class="option__filter">
+                <div class="drop--down filter__department">
+                    <select v-model="customerGroupId" @change="currentPage = 1; loadData()">
+                        <option value=" ">Tất cả nhóm khách hàng</option>
+                        <option v-for="customerGroup in customerGroups" 
+                            :value="customerGroup.CustomerGroupId" 
+                            :key="customerGroup.CustomerGroupId">{{ customerGroup.CustomerGroupName }}</option>
+                    </select>
                 </div>
             </div>
             <div class="option__button">
@@ -60,7 +70,7 @@
             </div>
             <div class="footer__left">Hiển thị {{(currentPage - 1) * customersPerPage + 1}}
                 -{{ (currentPage - 1) * customersPerPage + customers.length }}
-                /{{totalcustomers}} khách hàng
+                /{{totalCustomers}} khách hàng
             </div>
             <div class="footer__right">
                 <div class="drop--down">
@@ -74,8 +84,9 @@
             </div>
         </div>
         
-        <DialogAdd v-if="dialogAdd" :setDisplay="setDialogAdd" :loadData="loadData" :departments="departments" :positions="positions" :dialogMode="dialogMode" :CustomerId="CustomerId"/>
-        <DialogDelete v-if="dialogDelete" :setDisplay="setDialogDelete" :loadData="loadData" :CustomerId="CustomerId"
+        <DialogAdd v-if="dialogAdd" :setDisplay="setDialogAdd" :loadData="loadData" :customerGroups="customerGroups" :dialogMode="dialogMode" :customerId="CustomerId"/>
+        <DialogDelete v-if="dialogDelete" :setDisplay="setDialogDelete" :loadData="loadData" :id="CustomerId" 
+            :name="'customer'" 
             :message="'Bạn có muốn xóa khách hàng này không?'"/>
     </div>
 </template>
@@ -122,27 +133,21 @@ export default {
                     title: "Đại chỉ "
                 },
                 {
-                    key: "Money",
-                    title: "Số tiền nợ"
-                },
-                {
                     key: "MemberCardCode",
                     title: "Mã thẻ thành viên"
                 },
             ],
             customers: [],
-            departments: [],
-            positions: [],
+            customerGroups: [],
             totalPages: 0,
             currentPage: 1,
-            totalcustomers: 0,
+            totalCustomers: 0,
             customersPerPage: 15,
             dialogAdd: false,
             dialogDelete: false,
             dialogMode: null,
             CustomerId: null,
-            positionId: '-',
-            departmentId: '-',
+            customerGroupId: ' ',
             filterText: ''
         }
     },
@@ -151,23 +156,43 @@ export default {
         DialogDelete
     },
     mounted() {
-        this.$store.commit("setCurrentTab", "customer");
+        this.$store.commit("setCurrentTab", "customer"); 
+        axios.get('http://localhost:49779/api/customerGroups')
+            .then(res => {
+                if (res.data.Data != null && res.data.Code === 200) {
+                    this.customerGroups = res.data.Data;
+                }
+            })
+            .catch(res => {
+                console.log(res);
+            })
         this.loadData();
     },
     methods: {
         loadData() {
-            axios.get('http://api.manhnv.net/api/customers')
+            axios.get('http://localhost:49779/api/customers/count/'+ this.customerGroupId + '&' + (this.filterText===''? '%20':this.filterText))
                 .then(res => {
-                    this.customers = res.data;
-                    this.totalcustomers = this.customers.length;
+                    if (res.data.Data != null && res.data.Code === 200) {
+                        this.totalCustomers = res.data.Data;
+                    }
                     this.totalPages = Math.ceil(this.totalCustomers/this.customersPerPage);
-                    this.customers.map((customer) => {
-                        customer.DateOfBirth = this.formatDate(customer.DateOfBirth);
-                    })
                 })
                 .catch(res => {
                     console.log(res);
                 })
+            axios.get('http://localhost:49779/api/customers/' + this.currentPage + '&' + this.customersPerPage + '&' + this.customerGroupId + '&' + (this.filterText===''?'%20':this.filterText))
+                .then(res => {
+                    if (res.data.Data != null && res.data.Code === 200) {
+                        this.customers = res.data.Data;
+                    }
+                    this.customers = this.customers.map(customer => {
+                        customer.DateOfBirth = this.formatDate(customer.DateOfBirth);
+                        return customer;
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                }) 
         },
         changePage(number) {
             if (number > this.totalPages) number = this.totalPages;
@@ -190,6 +215,7 @@ export default {
             }
         },
         btnAddOnClick() {
+            console.log(1);
             this.dialogMode = 'ADD';
             this.dialogAdd = true;
         },

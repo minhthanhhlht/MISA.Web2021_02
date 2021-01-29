@@ -20,18 +20,18 @@
                             <tr>
                                 <td>
                                     <label>Mã nhân viên (<span class="red">*</span>)</label>
-                                    <div :class="{input: true, requiredError: !infoRequired.EmployeeCode.status}">
-                                        <input type="text" name="EmployeeCode" maxlength="20"
-                                            v-model="employee.EmployeeCode"
-                                            @blur="validate('EmployeeCode')"
-                                            :title="infoRequired.EmployeeCode.message"/>
+                                    <div :class="{input: true, requiredError: !infoRequired.CustomerCode.status}">
+                                        <input type="text" name="CustomerCode" maxlength="20"
+                                            v-model="customer.CustomerCode"
+                                            @blur="validate('CustomerCode')"
+                                            :title="infoRequired.CustomerCode.message"/>
                                     </div>
                                 </td>
                                 <td>
                                     <label>Họ và tên (<span class="red">*</span>)</label>
                                     <div :class="{input: true, requiredError: !infoRequired.FullName.status}">
                                         <input type="text" name="FullName" maxlength="100" 
-                                            v-model="employee.FullName" 
+                                            v-model="customer.FullName" 
                                             @blur="validate('FullName')"
                                             :title="infoRequired.FullName.message"/>
                                     </div>
@@ -41,13 +41,13 @@
                                 <td>
                                     <label>Ngày sinh</label>
                                     <div class="input">
-                                        <input type="date" v-model="employee.DateOfBirth"/>
+                                        <input type="date" v-model="customer.DateOfBirth"/>
                                     </div>
                                 </td>
                                 <td>
                                     <label>Giới tính</label>
                                     <div class="drop--down">
-                                        <select v-model="employee.Gender">
+                                        <select v-model="customer.Gender">
                                             <option value="0">Nam</option>
                                             <option value="1">Nữ</option>
                                             <option value="2">Khác</option>
@@ -58,16 +58,14 @@
                             <tr>
                                 <td>
                                     <label>Số CMTND/ Căn cước (<span class="red">*</span>)</label>
-                                    <div :class="{input: true, requiredError: !infoRequired.IdentityNumber.status}">
-                                        <input type="text" v-model="employee.IdentityNumber" 
-                                            @blur="validate('IdentityNumber')" maxlength="20"
-                                            :title="infoRequired.IdentityNumber.message"/>
+                                    <div :class="{input: true}">
+                                        <input type="text" v-model="customer.IdentityNumber" />
                                     </div>
                                 </td>
                                 <td>
                                     <label>Ngày cấp</label>
                                     <div class="input">
-                                        <input type="date" v-model="employee.IdentityDate"/>
+                                        <input type="date" v-model="customer.IdentityDate"/>
                                     </div>
                                 </td>
                             </tr>
@@ -75,7 +73,7 @@
                                 <td>
                                     <label>Nơi cấp</label>
                                     <div class="input">
-                                        <input type="text" v-model="employee.IdentityPlace" maxlength="255"/>
+                                        <input type="text" v-model="customer.IdentityPlace" maxlength="255"/>
                                     </div>
                                 </td>
                             </tr>
@@ -83,7 +81,7 @@
                                 <td>
                                     <label>Email (<span class="red">*</span>)</label>
                                     <div :class="{input: true, requiredError: !infoRequired.Email.status}">
-                                        <input type="email" v-model="employee.Email" 
+                                        <input type="email" v-model="customer.Email" 
                                             @blur="validate('Email')" maxlength="50" 
                                             :title="infoRequired.Email.message"/>
                                     </div>
@@ -91,7 +89,7 @@
                                 <td>
                                     <label>Số điện thoại (<span class="red">*</span>)</label>
                                     <div :class="{input: true, requiredError: !infoRequired.PhoneNumber.status}">
-                                        <input type="text" v-model="employee.PhoneNumber" 
+                                        <input type="text" v-model="customer.PhoneNumber" 
                                             @blur="validate('PhoneNumber')" maxlength="20" 
                                             :title="infoRequired.PhoneNumber.message"/>
                                     </div>
@@ -104,17 +102,13 @@
                                 <td>
                                     <label>Vị trí</label>
                                     <div class="drop--down position">
-                                        <select v-model="employee.PositionId">
-                                            <option v-for="(position, index) in positions" :key="index" :value="position.PositionId">{{ position.PositionName }}</option>
-                                        </select>
+                                        <select v-model="customer.PositionId"></select>
                                     </div>
                                 </td>
                                 <td>
                                     <label>Phòng ban</label>
                                     <div class="drop--down department">
-                                        <select v-model="employee.DepartmentId">
-                                            <option v-for="(department, index) in departments" :key="index" :value="department.DepartmentId">{{ department.DepartmentName }}</option>
-                                        </select>
+                                        <select v-model="customer.DepartmentId"></select>
                                     </div>
                                 </td>
                             </tr>
@@ -122,13 +116,13 @@
                                 <td>
                                     <label>Mã số thuế cá nhân</label>
                                     <div class="input">
-                                        <input type="text" v-model="employee.PersonalTaxCode" maxlength="20"/>
+                                        <input type="text" v-model="customer.PersonalTaxCode" maxlength="20"/>
                                     </div>
                                 </td>
                                 <td>
                                     <label>Mức lương cơ bản</label>
                                     <div class="input">
-                                        <input type="text" v-model="employee.Salary" maxlength="11"/>
+                                        <input type="text" v-model="customer.Salary" maxlength="11"/>
                                     </div>
                                 </td>
                             </tr>
@@ -136,13 +130,13 @@
                                 <td>
                                     <label>Ngày gia nhập công ty</label>
                                     <div class="input">
-                                        <input type="date" v-model="employee.JoinDate"/>
+                                        <input type="date" v-model="customer.JoinDate"/>
                                     </div>
                                 </td>
                                 <td>
                                     <label>Tình trạng công việc</label>
                                     <div class="drop--down">
-                                        <select v-model="employee.JobStatus">
+                                        <select v-model="customer.JobStatus">
                                             <option value="2">Đang thử việc</option>
                                             <option value="0">Đang làm việc</option>
                                             <option value="1">Đã nghỉ việc</option>
@@ -171,27 +165,19 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            employee: {
-                EmployeeCode: '',
+            customer: {
+                CustomerCode: '',
                 FullName: '',
-                IdentityNumber: '',
                 PhoneNumber: '',
                 Email: '',
-                JobStatus: '2',
-                Gender: '2',
-                DepartmentId: this.departments.length>0 ? this.departments[0].DepartmentId:'',
-                PositionId: this.positions.length>0 ? this.positions[0].PositionId:''
+                customerGroupId: this.customerGroups.length>0 ? this.customerGroups[0].CustomerGroupId:''
             },
             infoRequired: {
                 FullName: {
                     status: true,
                     message: null,
                 },
-                EmployeeCode: {
-                    status: true,
-                    message: null,
-                },
-                Email: {
+                CustomerCode: {
                     status: true,
                     message: null,
                 },
@@ -199,7 +185,7 @@ export default {
                     status: true,
                     message: null,
                 },
-                IdentityNumber: {
+                Email: {
                     status: true,
                     message: null,
                 }
@@ -209,27 +195,24 @@ export default {
     props: {
         setDisplay: Function,
         loadData: Function,
-        departments: Array,
-        positions: Array,
+        customerGroups: Array,
         dialogMode: String,
-        employeeId: String
+        customerId: String
     },
     mounted() {
         if (this.dialogMode === 'EDIT') {
-            axios.get('http://localhost:49779/api/Employees/' + this.employeeId)
+            axios.get('http://localhost:49779/api/customers/' + this.customerId)
                 .then(res => {
-                    this.employee = res.data;
-                    this.employee.DateOfBirth = this.formatDate(this.employee.DateOfBirth);
-                    this.employee.IdentityDate = this.formatDate(this.employee.IdentityDate);
-                    this.employee.JoinDate = this.formatDate(this.employee.JoinDate);
+                    this.customer = res.data;
+                    this.customer.DateOfBirth = this.formatDate(this.customer.DateOfBirth);
                 })
                 .catch(res => {
                     console.log(res);
                 })
         } else if (this.dialogMode === 'ADD') {
-            axios.get('http://localhost:49779/api/Employees/GetEmployeeCodeMax')
+            axios.get('http://localhost:49779/api/customer/GetCustomerCodeMax')
                 .then(res => {
-                    this.employee.EmployeeCode = 'NV' + (new Number(res.data.slice(2, res.data.length)) + 1);
+                    this.customer.CustomerCode = 'NV' + (new Number(res.data.slice(2, res.data.length)) + 1);
                 })
                 .catch(res => {
                     console.log(res);
@@ -250,7 +233,7 @@ export default {
             return year + '-' + month + '-' + day;
         },
         validate(type) {
-            if (!this.employee[type] || this.employee[type] === null || this.employee[type].length === 0) {
+            if (!this.customer[type] || this.customer[type] === null || this.customer[type].length === 0) {
                 this.infoRequired[type].message = 'Bạn phải điền thông tin này';
                 this.infoRequired[type].status = false;
             } else {
@@ -258,17 +241,17 @@ export default {
                 if (type === "Email") {
                     format = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                     this.infoRequired[type].message = "Hãy nhập đúng định dạng Email!";
-                } else if (type === "PhoneNumber" || type === "IdentityNumber") {
+                } else if (type === "PhoneNumber") {
                     format = /(([0-9]{1,})$)/g;
                     this.infoRequired[type].message = "Chỉ được nhập số!";
                 } else if (type === "FullName") {
                     format = /./g;
                     this.infoRequired[type].message = "Chỉ được nhập số!";
-                } else if (type === "EmployeeCode") {
-                    format = /^(NV)[0-9]{1,}$/g;
+                } else if (type === "CustomerCode") {
+                    format = /^(KH)[0-9]{1,}$/g;
                     this.infoRequired[type].message = "Hãy nhập đúng định dạng NV______!"
                 }
-                this.infoRequired[type].status = format.test(this.employee[type]);
+                this.infoRequired[type].status = format.test(this.customer[type]);
                 if (this.infoRequired[type].status) {
                     this.infoRequired[type].message = null;
                 }
@@ -283,18 +266,18 @@ export default {
                     return ;
                 }
             }
-            if (this.employee.PositionId === '' || this.employee.DepartmentId === '') {
+            if (this.customer.PositionId === '' || this.customer.DepartmentId === '') {
                 return ;
             }
             if (this.dialogMode === 'ADD') {
-                axios.post('http://localhost:49779/api/Employees', this.employee)
+                axios.post('http://localhost:49779/api/Customers', this.customer)
                     .then(res => {
                         if (res.data === 1) {
                             console.log("OK!");
                             this.setDisplay(false);
                         } else if (res.data === -1) {
-                            this.infoRequired.EmployeeCode.status = false;
-                            this.infoRequired.EmployeeCode.message = "Mã nhân viên đã tồn tại!"
+                            this.infoRequired.CustomerCode.status = false;
+                            this.infoRequired.CustomerCode.message = "Mã nhân viên đã tồn tại!"
                         } else {
                             console.log("NO!");
                         }
@@ -304,14 +287,14 @@ export default {
                         console.log(res);
                     })
             } else if (this.dialogMode === 'EDIT') {
-                axios.put('http://localhost:49779/api/Employees', this.employee)
+                axios.put('http://localhost:49779/api/customers', this.customer)
                     .then(res => {
                         if (res.data === 1) {
                             console.log("OK!");
                             this.setDisplay(false);
                         } else if (res.data === -1) {
-                            this.infoRequired.EmployeeCode.status = false;
-                            this.infoRequired.EmployeeCode.message = "Mã nhân viên đã tồn tại!"
+                            this.infoRequired.CustomerCode.status = false;
+                            this.infoRequired.CustomerCode.message = "Mã nhân viên đã tồn tại!"
                         } else {
                             console.log("NO!")
                         }

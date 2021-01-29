@@ -20,22 +20,22 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            employeeCode: null
+            
         }
     },
     props: {
         setDisplay: Function,
         loadData: Function,
-        employeeId: String,
-        message: String
+        id: String,
+        message: String,
+        name: String
     },
     methods: {
         deleteEmployee() {
-            axios.delete('http://localhost:49779/api/Employees/' + this.employeeId)
-                .then(res => {
-                    if (res.data !== 1) alert("error!");
-                    this.setDisplay(false);
+            axios.delete('http://localhost:49779/api/' + this.name + 's/' + this.id)
+                .then(() => {
                     this.loadData();
+                    this.setDisplay(false);
                 })
                 .catch(res => {
                     console.log(res);
