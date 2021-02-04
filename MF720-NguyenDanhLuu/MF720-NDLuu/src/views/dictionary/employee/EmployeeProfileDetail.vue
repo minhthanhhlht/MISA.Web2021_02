@@ -13,6 +13,7 @@
   padding-left: 16px;
   display: flex;
   font-size: 24px;
+  font-weight: bold;
 }
 
 .dialog-header-close {
@@ -75,7 +76,7 @@
   margin: 0 auto;
   border-radius: 50%;
   cursor: pointer;
-  background-image: url(/content/img/default-avatar.jpg);
+  background-image: url(/../assets/img/default-avatar.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

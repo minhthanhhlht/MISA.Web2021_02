@@ -12,6 +12,7 @@
           <div class="btn-text">Thêm nhân viên</div>
         </button>
         <Details :employee="selectedEmployee" @closePopup="closePopup" :isHide="isHideParent" />
+        <EmployeeDelete :isHideDelete="isHideDelete" @closeDelete="closeDelete" />
         <!-- <EmployeeAdd  @closePopup="closePopup" :isHide="isHideParent" /> -->
       </div>
     </div>
@@ -63,7 +64,7 @@
         </select>
       </div>
       <div class="filter-right">
-        <button class="btn-delete">Xoá</button>
+        <button id="btnDelete" class="btn-delete" @click="btnDeleteOnClick" >Xoá</button>
         <button id="btnRefresh" class="m-second-button m-btn-refresh"></button>
       </div>
     </div>
@@ -77,6 +78,7 @@
 
     <div
       class="grid grid-employee el-table el-table--fit el-table--scrollable-y el-table--enable-row-hover el-table--enable-row-transition"
+      style="overflow:auto;"
     >
       <table
         id="tbListData"
@@ -242,17 +244,22 @@
 <script>
 import * as axios from "axios";
 import Details from "./EmployeeProfileDetail";
-// import EmployeeAdd from "./EmployeeAdd";
+import EmployeeDelete from "./EmployeeDeleteDialog";
+
 export default {
   name: "Employees",
   components: {
     Details,
+    EmployeeDelete
     // EmployeeAdd
   },
   methods: {
     btnAddOnClick() {
-       this.selectedEmployee = {};
+      this.selectedEmployee = {};
       this.isHideParent = false;
+    },
+    btnDeleteOnClick(){
+      this.isHideDelete = false;
     },
     formatDate(date){
       var d = new Date(date);
@@ -282,11 +289,15 @@ export default {
     },
     closePopup(value) {
       this.isHideParent = value;
+    },
+    closeDelete(value){
+      this.isHideDelete = value;
     }
   },
   data() {
     return {
       isHideParent: true,
+      isHideDelete: true,
       test: "l",
       selectedEmployee: {
         // DateOfBirth: "1992-06-17T00:00:00",
@@ -485,7 +496,6 @@ export default {
   margin-left: 10px;
   margin-right: 10px;
 }
-
 .currency-for-input {
   position: absolute;
   right: 40px;
