@@ -1,0 +1,26 @@
+.grid {
+    width: 100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+}
+    .grid .grid-header {
+        height: 50px;
+    }
+
+    .grid .grid-content, .tablescroll_wrapper, .tablescroll {
+        height: calc(100% - 25px);
+    }
+    .grid table th,td {
+        border-bottom: 1px solid #bbbbbb;
+        padding: 15px 16px !important;
+        text-align: left;
+        white-space: nowrap;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+    }
+    .grid-employee{
+        margin-top: 10px;
+        height: calc(100vh - 234px);
+    }
